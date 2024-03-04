@@ -5,19 +5,18 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 )
 
 type Product struct {
-	ID          int64         `json:"id"`
-	UserID      int64         `json:"user_id"`
-	Name        string        `json:"name"`
-	Description string        `json:"description"`
-	StartPrice  sql.NullInt64 `json:"start_price"`
-	Images      []string      `json:"images"`
-	Watchers    []int64       `json:"watchers"`
-	CreatedAt   time.Time     `json:"created_at"`
+	ID          int64     `json:"id"`
+	UserID      int64     `json:"user_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	StartPrice  int64     `json:"start_price"`
+	Images      []string  `json:"images"`
+	Watchers    []int64   `json:"watchers"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type User struct {

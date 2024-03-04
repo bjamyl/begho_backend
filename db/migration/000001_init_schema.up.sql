@@ -12,7 +12,7 @@ CREATE TABLE "products" (
   "user_id" bigint NOT NULL,
   "name" varchar NOT NULL,
   "description" varchar NOT NULL,
-  "start_price" bigint,
+  "start_price" bigint NOT NULL,
   "images" text[],
   "watchers" bigint[],
   "created_at" timestamptz NOT NULL DEFAULT (now())

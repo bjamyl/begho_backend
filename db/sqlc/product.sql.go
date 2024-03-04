@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/lib/pq"
 )
@@ -26,12 +25,12 @@ INSERT INTO products (
 `
 
 type CreateProductParams struct {
-	UserID      int64         `json:"user_id"`
-	Name        string        `json:"name"`
-	Description string        `json:"description"`
-	StartPrice  sql.NullInt64 `json:"start_price"`
-	Images      []string      `json:"images"`
-	Watchers    []int64       `json:"watchers"`
+	UserID      int64    `json:"user_id"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	StartPrice  int64    `json:"start_price"`
+	Images      []string `json:"images"`
+	Watchers    []int64  `json:"watchers"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
@@ -80,10 +79,17 @@ func (q *Queries) GetProduct(ctx context.Context, id int64) (Product, error) {
 
 const listProducts = `-- name: ListProducts :many
 SELECT id, user_id, name, description, start_price, images, watchers, created_at FROM products
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) ListProducts(ctx context.Context) ([]Product, error) {
-	rows, err := q.db.QueryContext(ctx, listProducts)
+type ListProductsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]Product, error) {
+	rows, err := q.db.QueryContext(ctx, listProducts, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -118,18 +124,10 @@ const listUserProducts = `-- name: ListUserProducts :many
 SELECT id, user_id, name, description, start_price, images, watchers, created_at from products
 WHERE user_id = $1
 ORDER BY id
-LIMIT $2
-OFFSET $3
 `
 
-type ListUserProductsParams struct {
-	UserID int64 `json:"user_id"`
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-func (q *Queries) ListUserProducts(ctx context.Context, arg ListUserProductsParams) ([]Product, error) {
-	rows, err := q.db.QueryContext(ctx, listUserProducts, arg.UserID, arg.Limit, arg.Offset)
+func (q *Queries) ListUserProducts(ctx context.Context, userID int64) ([]Product, error) {
+	rows, err := q.db.QueryContext(ctx, listUserProducts, userID)
 	if err != nil {
 		return nil, err
 	}

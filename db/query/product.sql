@@ -15,13 +15,14 @@ SELECT * FROM products
 WHERE id = $1 LIMIT 1;
 
 -- name: ListProducts :many
-SELECT * FROM products;
+SELECT * FROM products
+LIMIT $1
+OFFSET $2;
+
 
 -- name: ListUserProducts :many
 SELECT * from products
 WHERE user_id = $1
-ORDER BY id
-LIMIT $2
-OFFSET $3;
+ORDER BY id;
 
 
