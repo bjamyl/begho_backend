@@ -13,5 +13,7 @@ migratedown:
 sqlc:
 	../sqlc generate
 
+server:
+	go run .
 
 .PHONY:createdb dropdb migrateup  migratedown  sqlc test server 
